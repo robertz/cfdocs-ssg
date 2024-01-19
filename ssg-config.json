@@ -1,0 +1,7 @@
+{
+	"outputDir": "_site",
+	"passthru": [
+		"assets"
+	],
+	"ignore": [ ]
+}
