@@ -2,8 +2,8 @@
 view: home 
 permalink: /{{el}}.html
 pagination:
-  data: collections.global.en
-  alias: el
+		data: collections.global.en
+		alias: el
 --->
 <cfoutput>
 	<cfscript>
@@ -15,14 +15,14 @@ pagination:
 
 				// jsonPath = expandPath("./data/en/#LCase(_doc)#.json");
 				// guidePath = expandPath("./guides/en/#LCase(_doc)#.md");
-    
+				
 				// if (fileExists(jsonPath)) {
 				// 	arrayAppend(related,data.related[i]);
 				// }
 				// else if (fileExists(guidePath)) {
 				// 	arrayAppend(guides,data.related[i]);
 				// }
-    if(collections.global.en.keyExists(lcase(_doc))) related.append(prc.related[i]); 
+				if(collections.global.en.keyExists(lcase(_doc))) related.append(prc.related[i]); 
 			}
 		}
 	</cfscript>
@@ -34,84 +34,84 @@ pagination:
 
 
 			<cfif StructKeyExists(prc, "syntax" ) AND Len(prc.syntax)>
-			 <p id="syntax">
-			  <cfif prc.type IS "tag">
-			   <small><span class="glyphicon glyphicon-tags" title="Tag Syntax"></span></small> &nbsp;
-			  </cfif>
-			  <code>#trim(Replace(encodeForHTML(prc.syntax), Chr(10), "<br>", "ALL"))#</code>
-			  <cfif prc.type IS "function" AND StructKeyExists(prc, "returns" ) AND Len(prc.returns)>
-			   <code><em>&##8594; returns #encodeForHTML(prc.returns)#</em></code>
-			  </cfif>
-			 </p>
-			 <cfif prc.type IS "tag">
-			  <cfif StructKeyExists(prc, "script" )>
-			   <cfset prc.scriptTitle="Script Syntax">
-			    <cfelseif NOT
-			     ListFindNoCase("cfif,cfset,cfelse,cfelseif,cfloop,cfinclude,cfparam,cfswitch,cfcase,cftry,cfthrow,cfrethrow,cfcatch,cffinally,cfmodule,cfcomponent,cfinterface,cfproperty,cffunction,cfimport,cftransaction,cftrace,cflock,cfthread,cfsavecontent,cflocation,cfargument,cfapplication,cfscript",
-			     prc.name)>
-			     <!--- add cfscript syntax --->
-			     <cfset prc.script=replaceScript(name=prc.name, syntax=prc.syntax, mode="other" )>
-			     <cfset prc.scriptTitle="Script Syntax ACF11+, Lucee, Railo 4.2+">
-			  </cfif>
-			  <cfif StructKeyExists(prc, "script" )>
-			   <p id="script-syntax">
-			    <small><span class="glyphicon glyphicon-flash" title="#encodeForHTMLAttribute(prc.scriptTitle)#"></span></small>
-			    &nbsp;<code>#encodeForHTML(prc.script)#</code>
-			   </p>
-			  </cfif>
-			  <cfelseif prc.type is "function">
-			   <cfif StructKeyExists(prc, "member" )>
-			    <h4><em>Member Function Syntax</em></h4>
-			    <p id="member-syntax">
-			     <code>#encodeForHTML(prc.member)#</code>
-			     <cfif StructKeyExists(prc, "member_details" ) AND StructKeyExists(prc.member_details, "returns" ) &&
-			      Len(prc.member_details.returns)>
-			      <code><em>&##8594; returns #encodeForHTML(prc.member_details.returns)#</em></code>
-			     </cfif>
-			    </p>
-			   </cfif>
-			 </cfif>
+				<p id="syntax">
+					<cfif prc.type IS "tag">
+						<small><span class="glyphicon glyphicon-tags" title="Tag Syntax"></span></small> &nbsp;
+					</cfif>
+					<code>#trim(Replace(encodeForHTML(prc.syntax), Chr(10), "<br>", "ALL"))#</code>
+					<cfif prc.type IS "function" AND StructKeyExists(prc, "returns" ) AND Len(prc.returns)>
+						<code><em>&##8594; returns #encodeForHTML(prc.returns)#</em></code>
+					</cfif>
+				</p>
+				<cfif prc.type IS "tag">
+					<cfif StructKeyExists(prc, "script" )>
+						<cfset prc.scriptTitle="Script Syntax">
+							<cfelseif NOT
+								ListFindNoCase("cfif,cfset,cfelse,cfelseif,cfloop,cfinclude,cfparam,cfswitch,cfcase,cftry,cfthrow,cfrethrow,cfcatch,cffinally,cfmodule,cfcomponent,cfinterface,cfproperty,cffunction,cfimport,cftransaction,cftrace,cflock,cfthread,cfsavecontent,cflocation,cfargument,cfapplication,cfscript",
+								prc.name)>
+								<!--- add cfscript syntax --->
+								<cfset prc.script=replaceScript(name=prc.name, syntax=prc.syntax, mode="other" )>
+								<cfset prc.scriptTitle="Script Syntax ACF11+, Lucee, Railo 4.2+">
+					</cfif>
+					<cfif StructKeyExists(prc, "script" )>
+						<p id="script-syntax">
+							<small><span class="glyphicon glyphicon-flash" title="#encodeForHTMLAttribute(prc.scriptTitle)#"></span></small>
+							&nbsp;<code>#encodeForHTML(prc.script)#</code>
+						</p>
+					</cfif>
+					<cfelseif prc.type is "function">
+						<cfif StructKeyExists(prc, "member" )>
+							<h4><em>Member Function Syntax</em></h4>
+							<p id="member-syntax">
+								<code>#encodeForHTML(prc.member)#</code>
+								<cfif StructKeyExists(prc, "member_details" ) AND StructKeyExists(prc.member_details, "returns" ) &&
+									Len(prc.member_details.returns)>
+									<code><em>&##8594; returns #encodeForHTML(prc.member_details.returns)#</em></code>
+								</cfif>
+							</p>
+						</cfif>
+				</cfif>
 			</cfif>
 
 
 
 
 
-			 <cfif structKeyExists(prc, "engines" ) AND structKeyExists(prc.engines, "coldfusion" ) AND
-			  structKeyExists(prc.engines.coldfusion, "deprecated" ) AND len(prc.engines.coldfusion.deprecated)>
-			  <div class="alert alert-danger">
-			   <h4>
-			    <span class="glyphicon glyphicon-warning-sign"></span>
-			    <cfif structKeyExists(prc.engines.coldfusion, "removed" ) AND len(prc.engines.coldfusion.removed)>
-			     The #prc.name# <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> was
-			     <strong>REMOVED</strong> from ColdFusion #encodeForHTML(prc.engines.coldfusion.removed)# <cfif
-			      prc.engines.coldfusion.removed IS NOT prc.engines.coldfusion.deprecated> and has been
-			      <strong>DEPRECATED</strong> since ColdFusion #encodeForHTML(prc.engines.coldfusion.deprecated)#</cfif>
-			     <cfelse>
-			      The #prc.name# <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> is
-			      <strong>DEPRECATED</strong> as of ColdFusion #encodeForHTML(prc.engines.coldfusion.deprecated)#
-			    </cfif>
-			   </h4>
-			  </div>
-			  <cfelseif StructKeyExists(prc, "engines" ) AND structCount(prc.engines) EQ 1>
-			   <div class="alert alert-warning">
-			    This <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> requires
-			    <cfscript>
-			     engineMap = {
-			     "coldfusion": "Adobe ColdFusion",
-			     "lucee": "Lucee",
-			     "openbd": "OpenBD",
-			     "railo": "Railo"
-			     };
-			     engine = structKeyList(prc.engines);
-			    </cfscript>
-			    #engineMap[engine]#<cfif StructKeyExists(prc.engines[engine], "minimum_version" ) AND
-			     Len(prc.engines[engine].minimum_version)> #prc.engines[engine].minimum_version# and up</cfif>.&nbsp;
-			    <em>Not supported on <cfif engine neq 'lucee'>Lucee, </cfif>
-			     <cfif engine neq 'coldfusion'>Adobe ColdFusion, </cfif> etc.
-			    </em>
-			   </div>
-			 </cfif>
+				<cfif structKeyExists(prc, "engines" ) AND structKeyExists(prc.engines, "coldfusion" ) AND
+					structKeyExists(prc.engines.coldfusion, "deprecated" ) AND len(prc.engines.coldfusion.deprecated)>
+					<div class="alert alert-danger">
+						<h4>
+							<span class="glyphicon glyphicon-warning-sign"></span>
+							<cfif structKeyExists(prc.engines.coldfusion, "removed" ) AND len(prc.engines.coldfusion.removed)>
+								The #prc.name# <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> was
+								<strong>REMOVED</strong> from ColdFusion #encodeForHTML(prc.engines.coldfusion.removed)# <cfif
+									prc.engines.coldfusion.removed IS NOT prc.engines.coldfusion.deprecated> and has been
+									<strong>DEPRECATED</strong> since ColdFusion #encodeForHTML(prc.engines.coldfusion.deprecated)#</cfif>
+								<cfelse>
+									The #prc.name# <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> is
+									<strong>DEPRECATED</strong> as of ColdFusion #encodeForHTML(prc.engines.coldfusion.deprecated)#
+							</cfif>
+						</h4>
+					</div>
+					<cfelseif StructKeyExists(prc, "engines" ) AND structCount(prc.engines) EQ 1>
+						<div class="alert alert-warning">
+							This <cfif prc.type IS "tag">tag<cfelseif prc.type IS "function">function</cfif> requires
+							<cfscript>
+								engineMap = {
+								"coldfusion": "Adobe ColdFusion",
+								"lucee": "Lucee",
+								"openbd": "OpenBD",
+								"railo": "Railo"
+								};
+								engine = structKeyList(prc.engines);
+							</cfscript>
+							#engineMap[engine]#<cfif StructKeyExists(prc.engines[engine], "minimum_version" ) AND
+								Len(prc.engines[engine].minimum_version)> #prc.engines[engine].minimum_version# and up</cfif>.&nbsp;
+							<em>Not supported on <cfif engine neq 'lucee'>Lucee, </cfif>
+								<cfif engine neq 'coldfusion'>Adobe ColdFusion, </cfif> etc.
+							</em>
+						</div>
+				</cfif>
 
 
 
@@ -379,7 +379,7 @@ pagination:
 					<div class="panel-heading" role="tab" id="headingOne">
 						<h4 class="panel-title" id="ex#example_index#">
 							<a role="button" data-toggle="collapse" data-parent="##accordion" href="##collapseEx#example_index#" aria-expanded="#example_index lte 5#" aria-controls="collapseEx#example_index#"<cfif example_index gt 5> class="collapsed"</cfif>>
-							  #XmlFormat(ex.title)#
+									#XmlFormat(ex.title)#
 							</a>
 						</h4>
 					</div>
