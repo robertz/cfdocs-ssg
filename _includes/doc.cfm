@@ -15,7 +15,7 @@
 				// else if (fileExists(guidePath)) {
 				// 	arrayAppend(guides,data.related[i]);
 				// }
-
+    if(collections.global.en.keyExists(lcase(_doc))) related.append(prc.related[i]); 
 			}
 		}
 	</cfscript>

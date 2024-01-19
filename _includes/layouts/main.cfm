@@ -1,22 +1,20 @@
+
 <cfif StructKeyExists(request, "skiplayout") AND request.skiplayout><cfoutput>#request.content#</cfoutput><cfelse><!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
 	<cfparam name="request.title" default="">
 	<cfparam name="request.assetBaseURL" default="/assets/">
 	<cfparam name="request.description" default="CFML Documentation Reference: #request.title#">
 	<cfparam name="request.ogname" default="">
-
 	<title><cfoutput>#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation</cfoutput></title>
-
 	<link href="https://cdn.jsdelivr.net/npm/bootswatch@3.4.1/lumen/bootstrap.min.css" rel="stylesheet" integrity="sha256-Tg2t3ds9B3CEkYurKyNc2E8wV5IoJjPgo0pq7meOeHE=" crossorigin="anonymous">
 	<cfparam name="request.hasExamples" default="false">
 	<cfif request.hasExamples><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/color-themes-for-google-code-prettify@2.0.4/dist/themes/tomorrow-night-bright.min.css" integrity="sha256-gLthyoOIaqxAddr/iijlwkUkgioUdF0FB39xaMdblzY=" crossorigin="anonymous" /></cfif>
 	<cfoutput><link href="#request.assetBaseURL#style.css" rel="stylesheet"></cfoutput>
 	<link rel="search" type="application/opensearchdescription+xml" title="Search CFML Documentation" href="/opensearch.xml" />
-
 	<!--- <cfoutput>
 		<meta name="description" content="#encodeForHTMLAttribute(request.description)#">
 		<meta property="og:title" content="#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation">
@@ -34,13 +32,87 @@
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation" />
 		<meta name="twitter:description" content="#EncodeForHTMLAttribute(request.description)#" />
-</cfoutput> --->
-
-
-</head>
+</cfoutput>
+</head> --->
 <body>
+	<cffunction name="linkTo" output="false">
+		<cfargument name="name">
+		<cfreturn "/" & URLEncodedFormat(LCase(arguments.name))>
+	</cffunction>
+
+ 	<cffunction name="autoLink" output="false">
+		<cfargument name="content">
+		<cfargument name="exclude" default="">
+		<cfargument name="isMarkdown" default=false>
+		<cfset var i = "">
+		<cfif NOT len(arguments.exclude) AND structKeyExists(url, "name")>
+			<cfset arguments.exclude = url.name>
+		</cfif>
+		<cfif ReFindNoCase("[^""]https?://", arguments.content)>
+			<cfset arguments.content = ReReplaceNoCase(arguments.content, "([^""])(https?://[a-zA-Z0-9._/=&%?##+-]+)", "\1<a href=""\2"">\2</a>", "ALL")>
+		</cfif>
+		<cfif ReFindNoCase("\bApplication\.cfc\b", arguments.content)>
+			<cfset arguments.content = ReReplaceNoCase(arguments.content, "\bApplication\.cfc\b", "<a href=""#linkTo('application-cfc')#"">Application.cfc</a>", "ALL")>
+		</cfif>
+		<cfloop array="#collections.global.index.tags#" index="i">
+			<cfif i IS NOT arguments.exclude>
+				<cfset arguments.content = ReReplaceNoCase(arguments.content, "[ ](#i#)([ .!,])", " <a href=""#linkTo(i)#"">\1</a>\2", "all")>
+			</cfif>
+		</cfloop>
+		<cfloop array="#collections.global.index.functions#" index="i">
+			<cfif i IS NOT arguments.exclude AND NOT ListFindNoCase("insert,include,now,invoke,array,query,each,second", i)>
+				<cfset arguments.content = ReReplaceNoCase(arguments.content, "([ >])(#i#)([< .!,])", "\1<a href=""#linkTo(i)#"">\2</a>\3", "all")>
+			</cfif>
+		</cfloop>
+		<!--- add CFx+ badge --->
+		<cfif REFind("CF[0-9.]+\+", arguments.content)>
+			<cfset arguments.content = ReReplace(arguments.content, "CF([0-9.]+\+)", "<span class=""label label-acf"" title=""Requires ColdFusion \1"">CF \1</span>", "ALL")>
+		</cfif>
+		<!--- add Luceex+ badge --->
+		<cfif REFind("Lucee[0-9.]+\+", arguments.content)>
+			<cfset arguments.content = ReReplace(arguments.content, "Lucee([0-9.]+\+)", "<span class=""label label-lucee"" title=""Requires Lucee \1"">Lucee \1</span>", "ALL")>
+		</cfif>
+		<!--- replace \n with br tags --->
+		<cfif not isMarkdown>
+			<cfset arguments.content = Replace(arguments.content, "#Chr(10)#", "<br />", "ALL")>
+		</cfif>
+		<!--- replace backticks with code tag block --->
+		<cfset arguments.content = replace(arguments.content, "&##x60;", "`", "ALL")>
+		<cfset arguments.content = ReReplace(arguments.content, "`([^`]+)`", "<code>\1</code>", "ALL")>
+		<cfreturn arguments.content>
+	</cffunction>
+
+	<cffunction name="findCategory">
+		<cfargument name="name"  default="#url.name#">
+		<cfscript>
+			var cat 		= "all";
+			// var categories 	= collections.global.categories;
+			// var reOrderKeys = "tags,functions,all";
+			// var key 		= "";
+			// // move tags and functions to bottom of array (remove all)
+			// for (key in reOrderKeys){
+			// 	if (arrayFind(categories,key)){
+			// 		// remove
+			// 		arrayDeleteAt(categories,arrayFind(categories,key));
+			// 		// add to bottom
+			// 		if (compare(key,"all"))
+			// 			arrayAppend(categories,key);
+			// 	}
+			// }
+			// // loop thru categories to return category
+			// // for (key in categories){
+			// // 	if ( arrayFindNoCase(application.categories[key].items, arguments.name) ){
+			// // 		cat = key;
+			// // 		break;
+			// // 	}
+			// }
+			return cat;
+		</cfscript>
+	</cffunction> 
+ 
 	<nav class="navbar navbar-default navbar-fixed-top">
-		<cfset listCategories = listSort(StructKeyList(collections.global.index),"text")>
+		<!--- <cfset listCategories = listSort(StructKeyList(application.categories),"text")> --->
+  <cfset listCategories = collections.global.index.categories.toList() >
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -54,43 +126,42 @@
 				<ul class="nav navbar-nav">
 					<cfoutput>
 					<li class="dropdown">
-						<a href="##" class="dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
+						<a href="#linkTo('tags')#" class="dropdown-toggle" data-toggle="dropdown">Tags <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="##">All Tags</a></li>
+							<li><a href="#linkTo('tags')#">All Tags</a></li>
 							<li class="divider"></li>
-
-
-					<cfloop array="#collections.global.index.categories#" index="cat">
+					<cfloop list="#listCategories#" index="cat">
 						<cfif cat contains "-tags">
-							<li><a href="/#cat#">#cat#</a></li>
+							<!--- <li><a href="#linkTo(cat)#">#application.categories[cat].name#</a></li> --->
+       <li><a href="#linkTo(cat)#">#cat#</a></li>
 						</cfif>
 					</cfloop>
-
-
 						</ul>
 					</li>
 					<li class="dropdown">
-						<a href="##" class="dropdown-toggle" data-toggle="dropdown">Functions <b class="caret"></b></a>
+						<a href="#linkTo('functions')#" class="dropdown-toggle" data-toggle="dropdown">Functions <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="##">All Functions</a></li>
+							<li><a href="#linkTo('functions')#">All Functions</a></li>
 							<li class="divider"></li>
-
-					<cfloop array="#collections.global.index.categories#" index="cat">
+					<cfloop list="#listCategories#" index="cat">
 						<cfif cat contains "-functions">
-							<li><a href="#cat#">#cat#</a></li>
+							<!--- <li><a href="#linkTo(cat)#">#application.categories[cat].name#</a></li> --->
+       <li><a href="#linkTo(cat)#">#cat#</a></li>
 						</cfif>
 					</cfloop>
-
-
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="##" class="dropdown-toggle" data-toggle="dropdown">Guides <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/application-cfc">Application.cfc</a></li>
-						<cfloop collection="#collections.global.index.guides#" item="guide">
-							<li><a href="/#collections.global.index.guides[guide]#">#collections.global.index.guides[guide]#</a></li>
-						</cfloop>
+							<li><a href="#linkTo("application-cfc")#">Application.cfc</a></li>
+						<!--- <cfloop collection="#application.guides#" item="guide">
+							<li><a href="#linkTo(guide)#">#application.guides[guide]#</a></li>
+						</cfloop> --->
+      <cfloop array="#collections.global.index.guides#" item="guide">
+							<li><a href="#linkTo(guide)#">#guide#</a></li>
+						</cfloop> 
+
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -127,7 +198,6 @@
 		</div>
 	</nav>
 
- 
 	
 	<cfoutput>#renderedHtml#</cfoutput>
 
