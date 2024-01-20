@@ -137,7 +137,7 @@ pagination:
     <li><a href="#linkTo(" tags")#">Tags</a></li>
    </cfif>
    <cfset cat=findCategory(url.name)>
-    <!--- <cfif Len(cat)><li><a href="#linkTo(cat)#">#application.categories[cat].name#</a></li></cfif> --->
+    <cfif Len(cat)><li><a href="#linkTo(cat)#">#collections.global.categories[cat].name#</a></li></cfif>
     <li class="active">#prc.name#</li>
 
     <cfif StructKeyExists(prc, "engines" ) AND StructKeyExists(prc.engines, "coldfusion" ) AND
