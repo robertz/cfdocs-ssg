@@ -1,10 +1,9 @@
-
 <cfif StructKeyExists(request, "skiplayout") AND request.skiplayout><cfoutput>#request.content#</cfoutput><cfelse><!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+	<cfif NOT FindNoCase("cfdocs.org", cgi.server_name)><meta name="ROBOTS" content="NOINDEX, NOFOLLOW"></cfif>
 	<cfparam name="request.title" default="">
 	<cfparam name="request.assetBaseURL" default="/assets/">
 	<cfparam name="request.description" default="CFML Documentation Reference: #request.title#">
@@ -32,13 +31,11 @@
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation" />
 		<meta name="twitter:description" content="#EncodeForHTMLAttribute(request.description)#" />
-</cfoutput>
-</head> --->
+</cfoutput> --->
+</head>
 <body>
-
 	<nav class="navbar navbar-default navbar-fixed-top">
-		<!--- <cfset listCategories = listSort(StructKeyList(application.categories),"text")> --->
-  <cfset listCategories = collections.global.index.categories.toList() >
+		<cfset listCategories = listSort(StructKeyList(collections.global.categories),"text")>
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -58,8 +55,7 @@
 							<li class="divider"></li>
 					<cfloop list="#listCategories#" index="cat">
 						<cfif cat contains "-tags">
-							<!--- <li><a href="#linkTo(cat)#">#application.categories[cat].name#</a></li> --->
-       <li><a href="#linkTo(cat)#">#cat#</a></li>
+							<li><a href="#linkTo(cat)#">#collections.global.categories[cat].name#</a></li>
 						</cfif>
 					</cfloop>
 						</ul>
@@ -71,7 +67,7 @@
 							<li class="divider"></li>
 					<cfloop list="#listCategories#" index="cat">
 						<cfif cat contains "-functions">
-							<!--- <li><a href="#linkTo(cat)#">#application.categories[cat].name#</a></li> --->
+							<!--- <li><a href="#linkTo(cat)#">#collections.global.categories[cat].name#</a></li> --->
        <li><a href="#linkTo(cat)#">#cat#</a></li>
 						</cfif>
 					</cfloop>
@@ -81,13 +77,9 @@
 						<a href="##" class="dropdown-toggle" data-toggle="dropdown">Guides <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#linkTo("application-cfc")#">Application.cfc</a></li>
-						<!--- <cfloop collection="#application.guides#" item="guide">
-							<li><a href="#linkTo(guide)#">#application.guides[guide]#</a></li>
-						</cfloop> --->
-      <cfloop array="#collections.global.index.guides#" item="guide">
+						<cfloop array="#collections.global.index.guides#" item="guide">
 							<li><a href="#linkTo(guide)#">#guide#</a></li>
-						</cfloop> 
-
+						</cfloop>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -124,6 +116,7 @@
 		</div>
 	</nav>
 
+	
 	<cfoutput>#renderedHtml#</cfoutput>
 
 	<hr>
