@@ -13,7 +13,7 @@
   }
  }
 
- function onGenerateStatic(){
+ function beforeGenerateStatic(){
   collections.all.each((item) => {
    if(item.permalink.find("/guides") == 1) {
     item.outFile = item.outFile.replace("/guides", "");
