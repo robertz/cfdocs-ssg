@@ -13,6 +13,7 @@
   }
  }
 
+ // executes before templates are generated
  function beforeGenerate(){
   collections.all.each((item) => {
    if(item.permalink.find("/guides") == 1) {
