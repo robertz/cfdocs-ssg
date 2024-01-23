@@ -3,5 +3,5 @@
 	"passthru": [
 		"assets"
 	],
-	"ignore": [ ]
+	"ignore": ["assets", "_sites" ]
 }

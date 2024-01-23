@@ -1,15 +1,28 @@
 
 <cfscript>
- // execute on load
- collections.global.categories = {};
- for(var cat in collections.global.index.categories){
-  if(collections.global.en.keyExists(cat)){
-   var thisCat = collections.global.en[cat];
-   collections.global.categories[cat] = {};
-   collections.global.categories[cat].name = thisCat.name;
-   collections.global.categories[cat].items = thisCat.related;
+ // executes after all configuration has loaded
+ function onBuildReady(){
+  collections.global.categories = {};
+  for(var cat in collections.global.index.categories){
+   if(collections.global.en.keyExists(cat)){
+    var thisCat = collections.global.en[cat];
+    collections.global.categories[cat] = {};
+    collections.global.categories[cat].name = thisCat.name;
+    collections.global.categories[cat].items = thisCat.related;
+   }
   }
  }
+
+ // executes before templates are generated
+ function beforeGenerate(){
+  collections.all.each((item) => {
+   if(item.permalink.find("/guides") == 1) {
+    item.outFile = item.outFile.replace("/guides", "");
+    item.permalink = item.permalink.replace("/guides", "");
+   }
+  });
+ }
+
 </cfscript>
  
  <cffunction name="linkTo" output="false">
