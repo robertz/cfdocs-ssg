@@ -2,6 +2,7 @@
 <cfscript>
 // executes after all configuration has loaded
 function onBuildReady(){
+
 	collections.global.categories = {};
 	for(var cat in collections.global.index.categories){
 		if(collections.global.en.keyExists(cat)){
@@ -11,10 +12,30 @@ function onBuildReady(){
 			collections.global.categories[cat].items = thisCat.related;
 		}
 	}
+
 }
 
 // executes before templates are generated
 function beforeGenerate(){
+
+	collections.global.guides = [:];
+	var _guides = {};
+	collections.all.each((doc) => {
+		if(doc.inFile.findNoCase("/guides/")){
+			var title = doc.content.listToArray(chr(10))[1];
+			if(left(title, 1) == "##"){
+				title = title.replace("## ", "");
+			}
+			else{
+				title = doc.fileSlug;
+			}
+			_guides[doc.fileSlug] = title ;
+		}
+	});
+	for(var el in _guides.sort("textnocase", "asc")){
+		collections.global.guides[el] = _guides[el];
+	}
+
 	collections.all.each((item) => {
 		if(item.permalink.find("/guides") == 1) {
 			item.type = "guide";

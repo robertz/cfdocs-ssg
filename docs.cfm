@@ -1,4 +1,5 @@
 <!--- 
+type: docs	
 view: home 
 permalink: /{{el}}.html
 pagination:
@@ -9,29 +10,15 @@ pagination:
 	<cfscript>
 		related = [];
 		guides = [];
+		prc.title = prc.name;
 		if (structKeyExists(prc, "related") AND arrayLen(prc.related)) {
-			
-
 			for (i = 1; i lte arrayLen(prc.related); i++) {
-
 				_doc = prc.related[i];
-
 				if(collections.global.en.keyExists(lcase(_doc))) 
 					related.append(_doc);
 
-				if(collections.global.index.guides.find(lcase(_doc))) 
-					guides.append(_doc);	
-
-			// 	
-			// 	jsonPath = expandPath("./data/en/#LCase(_doc)#.json");
-			// 	guidePath = expandPath("./guides/en/#LCase(_doc)#.md");
-
-			// 	if (fileExists(jsonPath)) {
-			// 		arrayAppend(related,prc.related[i]);
-			// 	}
-			// 	else if (fileExists(guidePath)) {
-			// 		arrayAppend(guides,prc.related[i]);
-			// 	}
+				if(collections.global.guides.keyExists(lcase(_doc))) 
+					guides.append(_doc);
 			}
 		}
 	</cfscript>
