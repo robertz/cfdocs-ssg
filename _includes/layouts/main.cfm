@@ -15,7 +15,7 @@
 	<link rel="search" type="application/opensearchdescription+xml" title="Search CFML Documentation" href="/opensearch.xml" />
 	<!--- <cfoutput>
 		<meta name="description" content="#encodeForHTMLAttribute(request.description)#">
-		<meta property="og:title" content="#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation">
+		<meta property="og:title" content="#ReReplace(prc.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation">
 		<meta property="og:site_name" content="CF Docs">
 		<meta property="og:url" content="https://cfdocs.org/#EncodeForHTMLAttribute(lcase(request.ogname))#">
 		<meta property="og:description" content="#EncodeForHTMLAttribute(request.description)#">
@@ -30,7 +30,7 @@
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="#ReReplace(request.title, "[^a-zA-Z0-9 ._-]", "", "ALL")# CFML Documentation" />
 		<meta name="twitter:description" content="#EncodeForHTMLAttribute(request.description)#" />
-</cfoutput> --->
+	</cfoutput> --->
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top">
