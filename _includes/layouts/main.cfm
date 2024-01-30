@@ -1,10 +1,9 @@
-<cfif StructKeyExists(request, "skiplayout") AND request.skiplayout><cfoutput>#request.content#</cfoutput><cfelse><!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<cfif NOT FindNoCase("cfdocs.org", cgi.server_name)><meta name="ROBOTS" content="NOINDEX, NOFOLLOW"></cfif>
-	<cfparam name="request.title" default="">
+	<cfparam name="request.title" default="#prc.keyExists("name") ? prc.name : ''#">
 	<cfparam name="request.assetBaseURL" default="/assets/">
 	<cfparam name="request.description" default="CFML Documentation Reference: #request.title#">
 	<cfparam name="request.ogname" default="">
@@ -137,4 +136,4 @@
 <cfif request.hasExamples><script src="https://cdn.jsdelivr.net/npm/code-prettify@0.1.0/loader/prettify.js" integrity="sha256-RBziwa17lG5sX8W6h1PxFJnp3nG2GDPYfTFRCK2kjyI=" crossorigin="anonymous" referrerpolicy="no-referrer"></script></cfif>
 </body>
 </html>
-</cfif>
+
